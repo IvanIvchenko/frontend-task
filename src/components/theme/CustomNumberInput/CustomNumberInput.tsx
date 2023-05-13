@@ -1,17 +1,17 @@
-import React from 'react';
-import { SCustomInput, SINputContainer } from './CustomNumberInput.styles';
-import { ICustomNumberInputProps } from './CustomNumberInput.types';
+import React from "react";
+import { SCustomInput, SINputContainer } from "./CustomNumberInput.styles";
+import { ICustomNumberInputProps } from "./CustomNumberInput.types";
 
 export const CustomNumberInput: React.FC<ICustomNumberInputProps> = ({
-  inputTheme = 'default',
+  inputTheme = "default",
   bgColor,
-  className = '',
+  className = "",
   bordered = false,
   marginBottom = 0,
   marginTop = 0,
   marginLeft = 0,
   marginRight = 0,
-  height = 40,
+  height = 30,
   controls = false,
   ...props
 }) => (

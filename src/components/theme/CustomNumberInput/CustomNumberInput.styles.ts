@@ -5,6 +5,7 @@ import { ICustomNumberInputProps } from './CustomNumberInput.types';
 
 export const SINputContainer = styled.div`
   position: relative;
+  width: 100%;
 `;
 
 export const SCustomInput = styled(InputNumber) <ICustomNumberInputProps>`
@@ -13,18 +14,18 @@ export const SCustomInput = styled(InputNumber) <ICustomNumberInputProps>`
   margin-top ${getProp('marginTop')}px;
   margin-left: ${getProp('marginLeft')}px;
   margin-right: ${getProp('marginRight')}px;
-  border: 1px solid ${getColor('grey300')};
+  border: 1px solid ${getColor('grey')};
   border-radius: 6px !important;
   height: ${getProp('height')}px;
   width: 100%;
   font-size: 16px !important;
 
   :hover, :focus, :active {
-    border: 1px solid ${getColor('grey300')} !important;
+    border: 1px solid ${getColor('grey')} !important;
     background: ${({ theme, bgColor }) => (bgColor ? theme[bgColor] : 'white')};
   }
 
-  .ant-input-number-input-wrap {
+  .ant-input-input-wrap {
     input {
       margin-top: 4px;
     }

@@ -1,12 +1,6 @@
-export interface IFormValues {
-  min: number;
-  max: number;
-  brands: string[];
-}
+import { FiltersFormValues } from "vars/types/filters.type";
 
-export interface IFiltersProps {
-  brands: string[];
-  prices: number[];
-  onSubmit: (formValues: IFormValues) => void;
+export interface FiltersProps {
+  onSubmit: (formValues: FiltersFormValues) => void;
   onReset: () => void;
-};
+}

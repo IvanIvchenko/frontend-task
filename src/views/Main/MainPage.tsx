@@ -1,136 +1,145 @@
-import React, { useState } from "react";
-import { Filters } from "components/general/Filters/Filters";
-import { CustomBlock } from "components/theme/CustomBlock/CustomBlock";
-import { CustomButton } from "components/theme/CustomButton/CustomButton";
+import React, { useState, FC, useEffect, SetStateAction } from "react";
 import { CustomContainer } from "components/theme/CustomContainer/CustomContainer";
-import { CustomIcon } from "components/theme/CustomIcon/CustomIcon";
-import { CustomText } from "components/theme/CustomText/CustomText";
-import { useGoods } from "utils/hooks/useGoods";
-import { IFormValues } from "components/general/Filters/Filters.types";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "vars/ROUTES";
-import { SGoodsWrapper, SImage, SImageContainer } from "./MainPage.styles";
+import { useRecord } from "utils/hooks/useRecord";
+import { Filters } from "components/general/Filters/Filters";
+import { FiltersFormValues } from "vars/types/filters.type";
+import { CustomButton } from "components/theme/CustomButton/CustomButton";
+import { useWindowWidth } from "utils/hooks/useWindowWidth";
+import { RecordsGrid } from "components/general/RecordsGrid/RecordsGrid";
+import { RecordType } from "vars/types/record.type";
+import { SRecordsWrapper } from "./MainPage.styles";
+import { EditModal } from "./EditModal/EditModal";
+import { CreateModal } from "./CreateModal/CreateModal";
+import { DeleteModal } from "./DeleteModal/DeleteModal";
 
-export const MainPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { goods } = useGoods();
+export const MainPage: FC = () => {
+  const width = useWindowWidth();
 
-  const [items, setItems] = useState(goods);
+  const {
+    records: fetchedRecords,
+    getAllRecordsData,
+    getAllRecordsStatus,
+  } = useRecord();
 
-  const handleLowToHighClick = () => {
-    const sortedItems = [...items].sort(
-      (itemOne, itemTwo) => itemOne.price - itemTwo.price
-    );
-    setItems(sortedItems);
-  };
+  const [records, setRecords] = useState<RecordType[]>([]);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [selectedRecordId, setSelectedRecordId] = useState("");
 
-  const handleHighToLowClick = () => {
-    const sortedItems = [...items].sort(
-      (itemOne, itemTwo) => itemTwo.price - itemOne.price
-    );
-    setItems(sortedItems);
-  };
+  useEffect(() => {
+    getAllRecordsData?.();
+  }, []);
 
-  const handleFiltersSubmit = (filterValues: IFormValues) =>
-    setItems(
-      goods.filter((item) => {
-        if (
-          filterValues.brands.length &&
-          !filterValues.brands.includes(item.brand)
-        ) {
-          return false;
+  useEffect(() => {
+    if (getAllRecordsStatus?.isSuccess) {
+      setRecords(fetchedRecords);
+    }
+  }, [getAllRecordsStatus]);
+
+  const handleFiltersSubmit = (filterValues: FiltersFormValues) => {
+    setRecords(
+      fetchedRecords?.filter((record) => {
+        let result = true;
+
+        if (filterValues.name) {
+          result =
+            result &&
+            record.name.toLowerCase().includes(filterValues.name.toLowerCase());
         }
-        if (item.price < filterValues.min || item.price > filterValues.max) {
-          return false;
+        if (filterValues.role) {
+          result = result && record.role === filterValues.role;
         }
-        return true;
+        if (filterValues.status) {
+          result = result && record.status === filterValues.status;
+        }
+
+        return result;
       })
     );
+  };
 
   const handleFiltersReset = () => {
-    setItems(goods);
+    setRecords(fetchedRecords);
+  };
+
+  const handleRecordCreate = () => {
+    setIsCreateModalVisible(true);
+  };
+
+  const handleRecordEdit = (recordId: string) => {
+    setSelectedRecordId(recordId);
+    setIsEditModalVisible(true);
+  };
+
+  const handleRecordDelete = (recordId: string) => {
+    setSelectedRecordId(recordId);
+    setIsDeleteModalVisible(true);
+  };
+
+  const handleModalClose = (
+    handler: (value: SetStateAction<boolean>) => void
+  ) => {
+    setSelectedRecordId("");
+    handler(false);
   };
 
   return (
     <>
-      <CustomBlock marginBottom={20} minHeight="64px">
-        <CustomContainer gap={8} width="100%" justifyContent="flex-end">
-          <CustomButton buttonSize="middle" onClick={handleLowToHighClick}>
-            <CustomContainer
-              cursorPointer
-              gap={18}
-              width="100%"
-              justifyContent="center"
-            >
-              <CustomText cursorPointer>Price: Low to High</CustomText>
-              <CustomIcon cursorPointer name="arrowDown" size="smaller" />
-            </CustomContainer>
-          </CustomButton>
-          <CustomButton buttonSize="middle" onClick={handleHighToLowClick}>
-            <CustomContainer
-              cursorPointer
-              gap={18}
-              width="100%"
-              justifyContent="center"
-            >
-              <CustomText cursorPointer>Price: High to Low</CustomText>
-              <CustomIcon cursorPointer name="arrowUp" size="smaller" />
-            </CustomContainer>
-          </CustomButton>
-        </CustomContainer>
-      </CustomBlock>
       <CustomContainer
-        justifyContent="space-between"
+        justifyContent="flex-start"
         alignItems="flex-start"
+        flexDirection={width > 1070 ? "row" : "column"}
+        width="100%"
         gap={30}
       >
-        <Filters
-          onSubmit={handleFiltersSubmit}
-          onReset={handleFiltersReset}
-          brands={Array.from(new Set(goods.map((good) => good.brand)))}
-          prices={Array.from(new Set(goods.map((good) => good.price)))}
-        />
-        <SGoodsWrapper>
-          {items.map((item) => (
-            <CustomBlock
-              marginBottom={8}
-              paddingBottom={10}
-              paddingLeft={10}
-              paddingRight={85}
-              paddingTop={10}
-              key={item.id}
-              onClick={() => navigate(`${ROUTES.main.path}/${item.id}`)}
-            >
-              <CustomContainer alignItems="center" gap={12}>
-                <SImageContainer>
-                  <SImage src={item.imageUrl} alt={item.imageUrl} />
-                </SImageContainer>
-                <CustomContainer flexDirection="column" alignItems="flex-start">
-                  <CustomText size="big" fontWeight="strong" marginBottom={16}>
-                    {item.name}
-                  </CustomText>
-                  <CustomText
-                    size="bigger"
-                    fontWeight="stronger"
-                    marginBottom={4}
-                  >
-                    {`$${item.price}`}
-                  </CustomText>
-                  <CustomText textColor="grey500" size="big" marginBottom={8}>
-                    {item.brand}
-                  </CustomText>
-                  <CustomText size="big" marginBottom={8}>
-                    {item.description.replace(/^(.{150}[^\s]*).*/, "$1")}
-                  </CustomText>
-                  <CustomText textColor="blue" size="big" fontWeight="strong">
-                    View details
-                  </CustomText>
-                </CustomContainer>
-              </CustomContainer>
-            </CustomBlock>
-          ))}
-        </SGoodsWrapper>
+        <CustomContainer
+          flexDirection="column"
+          justifyContent={width > 1070 ? "flex-start" : "center"}
+          width={width > 1070 ? "auto" : "100%"}
+        >
+          <CustomContainer
+            width="100%"
+            justifyContent="center"
+            marginBottom={10}
+          >
+            <Filters
+              onSubmit={handleFiltersSubmit}
+              onReset={handleFiltersReset}
+            />
+          </CustomContainer>
+          <CustomContainer
+            width="100%"
+            justifyContent="center"
+            marginBottom={10}
+          >
+            <CustomButton onClick={() => handleRecordCreate()}>
+              Create Record
+            </CustomButton>
+          </CustomContainer>
+        </CustomContainer>
+        <SRecordsWrapper>
+          <RecordsGrid
+            records={records || []}
+            onRecordDelete={handleRecordDelete}
+            onRecordEdit={handleRecordEdit}
+          />
+        </SRecordsWrapper>
       </CustomContainer>
+      <EditModal
+        isVisible={isEditModalVisible}
+        onClose={() => handleModalClose(setIsEditModalVisible)}
+        recordId={selectedRecordId}
+      />
+      <CreateModal
+        isVisible={isCreateModalVisible}
+        onClose={() => handleModalClose(setIsCreateModalVisible)}
+      />
+      <DeleteModal
+        isVisible={isDeleteModalVisible}
+        onClose={() => handleModalClose(setIsDeleteModalVisible)}
+        recordId={selectedRecordId}
+      />
     </>
   );
 };

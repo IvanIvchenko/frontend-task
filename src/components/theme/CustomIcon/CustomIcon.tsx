@@ -1,13 +1,17 @@
-import React from 'react';
-import { theme } from 'styles/theme';
-import { ICON_SIZE_MAP, IIconProps, INITIAL_SIZE_MAP } from './CustomIcon.types';
+import React from "react";
+import { theme } from "styles/theme";
+import {
+  ICON_SIZE_MAP,
+  IIconProps,
+  INITIAL_SIZE_MAP,
+} from "./CustomIcon.types";
 
 export const CustomIcon: React.FC<IIconProps> = ({
-  display = 'block',
+  display = "block",
   className,
   name,
-  size = 'normal',
-  color = 'white',
+  size = "normal",
+  color = "white",
   cursorPointer = false,
   onClick = () => {},
 }) => {
@@ -16,7 +20,7 @@ export const CustomIcon: React.FC<IIconProps> = ({
   const initialHeight = INITIAL_SIZE_MAP[name]?.height ?? sizeVal;
   const widthRatio = sizeVal / initialWidth;
   const heightRatio = sizeVal / initialHeight;
-  const classNameStr = `svg-icon icon-${name} ${className || ''}`;
+  const classNameStr = `svg-icon icon-${name} ${className || ""}`;
 
   return (
     <svg
@@ -26,7 +30,7 @@ export const CustomIcon: React.FC<IIconProps> = ({
       viewBox={`0 0 ${initialWidth} ${initialHeight}`}
       width={initialWidth * widthRatio}
       height={initialHeight * heightRatio}
-      style={{ cursor: cursorPointer ? 'pointer' : 'default' }}
+      style={{ cursor: cursorPointer ? "pointer" : "default" }}
       xmlns="http://www.w3.org/2000/svg"
       onClick={onClick}
       version="1.1"

@@ -11,10 +11,6 @@ export const SLayout = styled(LayoutLibrary)`
 
 export const SMainLayoutHeaderWrapper = styled.div``;
 
-export const SNavigationBarWrapper = styled.div`
-  margin: 0px 0px 20px 130px;
-`;
-
 export const SLayoutInner = styled.div`
   display: flex;
   flex-direction: column;
@@ -29,5 +25,5 @@ export const SLayoutContent = styled(LayoutLibrary.Content)`
   flex-direction: column;
   justify-content: flex-start;
   flex: 1 0 auto;
-  padding: 0 130px;
+  padding: 0 7%;
 `;
