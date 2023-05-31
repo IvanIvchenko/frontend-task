@@ -38,10 +38,3 @@ export const getColorByProp =
   (propName: string, fallback: string = "none") =>
   (props: any) =>
     props.theme[props[propName]] || fallback;
-
-export const getGridColumnNumber = (width: number) => {
-  if (width < 1070) return 14;
-  if (width < 1300) return 10;
-  if (width < 1600) return 8;
-  return 6;
-};

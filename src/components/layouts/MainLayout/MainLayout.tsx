@@ -1,5 +1,4 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import React, { ReactNode } from "react";
 import {
   SLayout,
   SLayoutInner,
@@ -8,16 +7,14 @@ import {
 } from "./MainLayout.styles";
 import { MainLayoutHeader } from "./Header/Header";
 
-export const MainLayout: React.FC = () => (
+export const MainLayout: React.FC<{ children: ReactNode }> = ({ children }) => (
   <SLayout>
     <SMainLayoutHeaderWrapper>
       <MainLayoutHeader />
     </SMainLayoutHeaderWrapper>
 
     <SLayoutInner>
-      <SLayoutContent>
-        <Outlet />
-      </SLayoutContent>
+      <SLayoutContent>{children}</SLayoutContent>
     </SLayoutInner>
   </SLayout>
 );

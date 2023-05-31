@@ -1,14 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { recordApi } from "./record/record.api";
-import { recordSlice } from "./record/record.slice";
+import { numbersApi } from "./numbers/numbers.api";
+import { numbersSlice } from "./numbers/numbers.slice";
 
 export const store = configureStore({
   reducer: {
-    [recordApi.reducerPath]: recordApi.reducer,
-    record: recordSlice.reducer,
+    [numbersApi.reducerPath]: numbersApi.reducer,
+    numbers: numbersSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([recordApi.middleware]),
+    getDefaultMiddleware().concat([numbersApi.middleware]),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

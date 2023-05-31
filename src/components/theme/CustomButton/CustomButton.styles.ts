@@ -57,8 +57,8 @@ export const SCustomButton = styled(Button)<ICustomButtonProps>`
       &[disabled],
       &[disabled]:hover {
         color: ${getColorByProp('disabledTextColor', 'cream')};
-        background: ${getColorByProp('disabledBgColor', 'charcoal60')} !important;
-        border-color: ${getColorByProp('disabledBorderColor', 'charcoal60')} !important;
+        background: ${getColor("grey300")} !important;
+        border-color: ${getColor("grey300")} !important;
       }
     `}
 

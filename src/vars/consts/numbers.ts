@@ -1,0 +1,1 @@
+export const TYPES = ["uint8", "uint16", "hex8", "hex16"];

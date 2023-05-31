@@ -5,14 +5,14 @@ import { SMainLayoutHeader } from "./Header.styles";
 export const MainLayoutHeader: React.FC = () => (
   <SMainLayoutHeader>
     <CustomText fontWeight="stronger" size="bigger" textColor="blueLight">
-      {`BESKYD Front-End Task | `}
+      {`Front-End Task | `}
       <CustomText
         fontWeight="stronger"
         size="bigger"
         textColor="blue"
         display="inline"
       >
-        Ivan Ivchenko
+        Bohdan Pylypchenko
       </CustomText>
     </CustomText>
   </SMainLayoutHeader>

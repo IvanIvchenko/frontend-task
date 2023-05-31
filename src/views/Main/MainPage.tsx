@@ -1,145 +1,38 @@
-import React, { useState, FC, useEffect, SetStateAction } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { CustomContainer } from "components/theme/CustomContainer/CustomContainer";
-import { useRecord } from "utils/hooks/useRecord";
-import { Filters } from "components/general/Filters/Filters";
-import { FiltersFormValues } from "vars/types/filters.type";
-import { CustomButton } from "components/theme/CustomButton/CustomButton";
-import { useWindowWidth } from "utils/hooks/useWindowWidth";
-import { RecordsGrid } from "components/general/RecordsGrid/RecordsGrid";
-import { RecordType } from "vars/types/record.type";
-import { SRecordsWrapper } from "./MainPage.styles";
-import { EditModal } from "./EditModal/EditModal";
-import { CreateModal } from "./CreateModal/CreateModal";
-import { DeleteModal } from "./DeleteModal/DeleteModal";
+import { NumbersForm } from "components/general/NumbersForm/NumbersForm";
+import { CustomText } from "components/theme/CustomText/CustomText";
+import { useNumbers } from "utils/hooks/useNumbers";
+import { NumbersRequestType } from "vars/types/numbers.type";
+import { Spin } from "antd";
 
 export const MainPage: FC = () => {
-  const width = useWindowWidth();
-
-  const {
-    records: fetchedRecords,
-    getAllRecordsData,
-    getAllRecordsStatus,
-  } = useRecord();
-
-  const [records, setRecords] = useState<RecordType[]>([]);
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-  const [selectedRecordId, setSelectedRecordId] = useState("");
-
+  const [numbers, setNumbers] = useState<string[]>([]);
+  const { getNumbersData, getNumbersStatus, data } = useNumbers();
   useEffect(() => {
-    getAllRecordsData?.();
-  }, []);
-
-  useEffect(() => {
-    if (getAllRecordsStatus?.isSuccess) {
-      setRecords(fetchedRecords);
+    if (getNumbersStatus.isSuccess) {
+      setNumbers(data);
     }
-  }, [getAllRecordsStatus]);
+  }, [getNumbersStatus]);
 
-  const handleFiltersSubmit = (filterValues: FiltersFormValues) => {
-    setRecords(
-      fetchedRecords?.filter((record) => {
-        let result = true;
-
-        if (filterValues.name) {
-          result =
-            result &&
-            record.name.toLowerCase().includes(filterValues.name.toLowerCase());
-        }
-        if (filterValues.role) {
-          result = result && record.role === filterValues.role;
-        }
-        if (filterValues.status) {
-          result = result && record.status === filterValues.status;
-        }
-
-        return result;
-      })
-    );
-  };
-
-  const handleFiltersReset = () => {
-    setRecords(fetchedRecords);
-  };
-
-  const handleRecordCreate = () => {
-    setIsCreateModalVisible(true);
-  };
-
-  const handleRecordEdit = (recordId: string) => {
-    setSelectedRecordId(recordId);
-    setIsEditModalVisible(true);
-  };
-
-  const handleRecordDelete = (recordId: string) => {
-    setSelectedRecordId(recordId);
-    setIsDeleteModalVisible(true);
-  };
-
-  const handleModalClose = (
-    handler: (value: SetStateAction<boolean>) => void
-  ) => {
-    setSelectedRecordId("");
-    handler(false);
+  const handleFormCompletion = (fields: NumbersRequestType) => {
+    getNumbersData(fields);
   };
 
   return (
-    <>
-      <CustomContainer
-        justifyContent="flex-start"
-        alignItems="flex-start"
-        flexDirection={width > 1070 ? "row" : "column"}
-        width="100%"
-        gap={30}
-      >
-        <CustomContainer
-          flexDirection="column"
-          justifyContent={width > 1070 ? "flex-start" : "center"}
-          width={width > 1070 ? "auto" : "100%"}
-        >
-          <CustomContainer
-            width="100%"
-            justifyContent="center"
-            marginBottom={10}
-          >
-            <Filters
-              onSubmit={handleFiltersSubmit}
-              onReset={handleFiltersReset}
-            />
-          </CustomContainer>
-          <CustomContainer
-            width="100%"
-            justifyContent="center"
-            marginBottom={10}
-          >
-            <CustomButton onClick={() => handleRecordCreate()}>
-              Create Record
-            </CustomButton>
-          </CustomContainer>
-        </CustomContainer>
-        <SRecordsWrapper>
-          <RecordsGrid
-            records={records || []}
-            onRecordDelete={handleRecordDelete}
-            onRecordEdit={handleRecordEdit}
-          />
-        </SRecordsWrapper>
-      </CustomContainer>
-      <EditModal
-        isVisible={isEditModalVisible}
-        onClose={() => handleModalClose(setIsEditModalVisible)}
-        recordId={selectedRecordId}
-      />
-      <CreateModal
-        isVisible={isCreateModalVisible}
-        onClose={() => handleModalClose(setIsCreateModalVisible)}
-      />
-      <DeleteModal
-        isVisible={isDeleteModalVisible}
-        onClose={() => handleModalClose(setIsDeleteModalVisible)}
-        recordId={selectedRecordId}
-      />
-    </>
+    <CustomContainer
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+      width="100%"
+    >
+      <NumbersForm onComplete={handleFormCompletion} />
+      {getNumbersStatus.isSuccess && (
+        <CustomText marginTop={15} textAlign="center">{`[${numbers.join(
+          ", "
+        )}]`}</CustomText>
+      )}
+      {getNumbersStatus.isLoading && <Spin />}
+    </CustomContainer>
   );
 };
