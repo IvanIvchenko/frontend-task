@@ -1,7 +1,6 @@
 import React from "react";
 import "./index.css";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import { ReactComponent as IconSprite } from "assets/icon-sprite.svg";
 import { Fonts } from "styles/fonts";
@@ -18,7 +17,6 @@ const root = createRoot(container!);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
         <ConfigProvider
           theme={{
             hashed: false,
@@ -34,7 +32,6 @@ root.render(
             <App />
           </ThemeController>
         </ConfigProvider>
-      </BrowserRouter>
     </Provider>
   </React.StrictMode>
 );

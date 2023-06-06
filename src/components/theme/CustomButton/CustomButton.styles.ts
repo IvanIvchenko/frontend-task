@@ -1,8 +1,7 @@
 import styled, { css } from 'styled-components/macro';
 import { Button } from 'antd';
 import { getColor, getProp, ifProp, getColorByProp } from 'utils/helpers/styleHelpers';
-import { Link } from 'react-router-dom';
-import { ICustomButtonProps, ILinkWrapperProps } from './CustomButton.types';
+import { ICustomButtonProps } from './CustomButton.types';
 
 export const SCustomButton = styled(Button)<ICustomButtonProps>`
   margin-bottom: ${getProp('marginBottom')}px;
@@ -156,10 +155,4 @@ export const SCustomButton = styled(Button)<ICustomButtonProps>`
         color: ${getColor('blue')};
       `}
   }
-`;
-
-export const BtnLinkWrapper = styled(Link)<ILinkWrapperProps>`
-  margin-bottom: ${getProp('marginBottom')}px;
-  margin-top: ${getProp('marginTop')}px;
-  width: ${ifProp('fluid', '100%', 'auto')};
 `;

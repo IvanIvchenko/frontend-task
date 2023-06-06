@@ -85,12 +85,19 @@ export const NumbersForm: FC<NumberFormInputProps> = ({ onComplete }) => {
             name="size"
             validateTrigger={["onBlur", "onChange"]}
             rules={[
-              { required: true, message: "Please input size" },
-              {
-                required: true,
-                pattern: /^(?:[1-9]|10)$/,
+              (formInstance) => ({
                 message: "Size must be in range of 1-10",
-              },
+                validator(_, value) {
+                  const type = formInstance.getFieldValue("type");
+                  if (type === "hex8" || type === "hex16") {
+                    const regex = /^(?:[1-9]|10)$/.test(value);
+                    return regex
+                      ? Promise.resolve()
+                      : Promise.reject(new Error());
+                  }
+                  return Promise.resolve();
+                },
+              }),
             ]}
             noStyle
           >
@@ -117,7 +124,8 @@ export const NumbersForm: FC<NumberFormInputProps> = ({ onComplete }) => {
                 textColor="white"
                 marginBottom={50}
                 disabled={
-                  !form.isFieldsTouched(true) ||
+                  !form.isFieldTouched("type") ||
+                  !form.isFieldTouched("length") ||
                   !!form.getFieldsError().filter(({ errors }) => errors.length)
                     .length
                 }
